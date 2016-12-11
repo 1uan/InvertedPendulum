@@ -1,2 +1,2 @@
 # InvertedPendulum
-A place to store files for the inverted pendulem robot
+A place to store files for the inverted pendulum robot
