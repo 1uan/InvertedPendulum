@@ -17,8 +17,8 @@ void setup() {
   pinMode(encoderPinA, INPUT); 
   pinMode(encoderPinB, INPUT); 
   pinMode(clearButton, INPUT);
-  digitalWrite(encoderPinA, HIGH);  // turn on pull-up resistor
-  digitalWrite(encoderPinB, HIGH);  // turn on pull-up resistor
+  digitalWrite(encoderPinA, HIGH);
+  digitalWrite(encoderPinB, HIGH);  
   digitalWrite(clearButton, HIGH);
 
 // encoder pin on interrupt 0 (pin 2)
