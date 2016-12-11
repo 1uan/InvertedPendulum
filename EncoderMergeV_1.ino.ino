@@ -7,6 +7,8 @@ enum PinAssignments {
   FLencoderPinB  = 21,
 
 };
+#include <PID_v1.h>
+#define PIN_OUTPUT 5
 
 float PENencoderPos = 0;
 float PENlastReportedPos = 1;
@@ -17,7 +19,7 @@ float FLlastReportedPos = 1;
 float realPen;
 float realFR;
 float realFL;
-
+double Setpoint, Input, Output;
 
 boolean PEN_A_set = false;
 boolean PEN_B_set = false;
@@ -25,7 +27,8 @@ boolean FR_A_set = false;
 boolean FR_B_set = false;
 boolean FL_A_set = false;
 boolean FL_B_set = false;
-
+double Kp=1, Ki=0, Kd=0;
+PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
 void setup() {
 
@@ -55,6 +58,13 @@ void setup() {
   attachInterrupt(2, doEncoderE, CHANGE);
   // encoder pin on interrupt 5 (pin 19)
   attachInterrupt(3, doEncoderF, CHANGE);
+ 
+  Input = realPen;
+  Setpoint = 90;
+
+  //turn the PID on
+  myPID.SetMode(AUTOMATIC);
+
 
   Serial.begin(38400);
 }
@@ -63,31 +73,19 @@ void setup() {
 void loop() {
   if (PENlastReportedPos != PENencoderPos) {
     realPen = (PENencoderPos / 4) * (.036);
-    Serial.print(realPen , DEC);
-
-
-    Serial.println(realPen - PENlastReportedPos);
     PENlastReportedPos = realPen;
   }
-
   if (FRlastReportedPos != FRencoderPos) {
     realFR = (FRencoderPos / 4);
-    Serial.print(realFR , DEC);
-
-
-    Serial.println(realFR - FRlastReportedPos);
     FRlastReportedPos = realFR;
-
   }
   if (FLlastReportedPos != FLencoderPos) {
     realFL = (FLencoderPos / 4);
-    Serial.print(realFL , DEC);
-
-
-    Serial.println(realFL - FLlastReportedPos);
     FLlastReportedPos = realFL;
-
   }
+  Input = realPen;
+  myPID.Compute();
+  analogWrite(PIN_OUTPUT, Output);
 }
 
 // Interrupt on A changing state
